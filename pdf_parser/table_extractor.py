@@ -1,23 +1,33 @@
 import fitz
+class TableExtractor:
+    def __init__(self, pdf_path):
+        self.doc = fitz.open(pdf_path)
 
-doc = fitz.open("data/test1.pdf")
-page_number = 0
+    def extract_tables(self):
+        page_number = 0
 
-for page in doc:
-    page_number += 1
-    tables = page.find_tables().tables
-    for table in tables:
-        print(f'Table found in page {page_number}')
-        print(table.bbox)
-        
-        table_data = table.extract()
-        clean_rows = []
+        for page in self.doc:
 
-        for row in table_data:
-            filled = sum(cell is not None and cell.strip() != "" for cell in row)
+            page_number += 1
+            self.tables = page.find_tables().tables
 
-            if filled > 1:
-                clean_rows.append(row)
+            for table in self.tables:
+                print(f'Table found in page {page_number}')
+                print(table.bbox)
+                
+                table_data = table.extract()
+                clean_rows = []
 
-        for row in clean_rows:
-            print(row)
+                if len(table_data) < 2:
+                    continue
+
+                for row in table_data:
+                    filled = sum(cell is not None and cell.strip() != "" for cell in row)
+
+                    if filled > 1:
+                        clean_rows.append(row)
+
+
+if __name__ == "__main__":
+    extractor = TableExtractor("data/sample2.pdf")
+    extractor.extract_tables()
