@@ -9,12 +9,12 @@ class ImageExtractor:
     def __init__(self, pdf_path):
         self.doc = fitz.open(pdf_path)
 
-    def extract_images(self, ocr=True):
-        page_number = 0
+    def extract_images(self, ocr=False):
         seen = set()
 
         for page_number, page in enumerate(self.doc):
-
+            
+            self.page = page_number + 1
             image_list = page.get_images(full=True)
 
             for image_index, img in enumerate(image_list):
@@ -41,8 +41,10 @@ class ImageExtractor:
                     text = pytesseract.image_to_string(image)
 
                     if len(text.strip()) < 5:
-                        continue
+                        continue 
+                        
+                    return text
 
 if __name__ == "__main__":
-    extractor = ImageExtractor("data/sample2.pdf")
-    extractor.extract_images()
+    extractor = ImageExtractor("data/test1.pdf")
+    print(extractor.extract_images(ocr=True))

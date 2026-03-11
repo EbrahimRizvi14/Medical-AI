@@ -4,9 +4,12 @@ from table_extractor import TableExtractor
 class TextExtractor:
     def __init__(self, pdf_path):
         self.doc = fitz.open(pdf_path)
-        self.table_extractor = TableExtractor(pdf_path).extract_tables()
+        self.table_extractor = TableExtractor(pdf_path).return_tables()
 
     def extract_text(self):
+
+        paragraphs = []
+
         for page in self.doc:
 
             page_dict = page.get_text("dict")
@@ -24,7 +27,7 @@ class TextExtractor:
                     line_text = line_text.replace("\uf0b7", "•")
 
 
-                    if line_text.strip() in self.table_extractor.tables:
+                    if line_text.strip() in self.table_extractor:
                         print(f"Table text found: {line_text.strip()}")
                         continue
 
@@ -53,6 +56,11 @@ class TextExtractor:
             if current_para:
                 paras.append(" ".join(current_para))
 
+            paragraphs.append(paras)
+
+        return paragraphs
+
 if __name__ == "__main__":
-    extractor = TextExtractor("data/sample2.pdf")
-    print(extractor.extract_text())
+    extractor = TextExtractor("data/test1.pdf")
+    for i in extractor.extract_text():
+            print(i)
