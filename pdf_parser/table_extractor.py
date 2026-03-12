@@ -6,6 +6,8 @@ class TableExtractor:
 
     def extract_tables(self):
 
+        all_tables = []
+
         for page_number, page in enumerate(self.doc, start=1):
 
             self.tables = page.find_tables().tables
@@ -26,7 +28,10 @@ class TableExtractor:
                     if filled > 1:
                         clean_rows.append(row)
                     
-                return clean_rows
+                if clean_rows:
+                    all_tables.append((page_number, clean_rows))
+                    
+        return all_tables
             
     def return_tables(self):
 

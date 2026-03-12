@@ -59,8 +59,20 @@ class TextExtractor:
             paragraphs.append(paras)
 
         return paragraphs
+    
+    def is_scanned_pdf(self):
+        for page in self.doc:
+            text = page.get_text().strip()
+            total_chars = len(text)
+
+            if total_chars < 500:
+                return True
+            else:
+                return False
 
 if __name__ == "__main__":
-    extractor = TextExtractor("data/test1.pdf")
+    extractor = TextExtractor("data/blank.pdf")
     for i in extractor.extract_text():
             print(i)
+
+    print(extractor.is_scanned_pdf())
